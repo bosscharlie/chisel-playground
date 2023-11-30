@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
     const std::unique_ptr<VGCD> dut{new VGCD{contextp.get(), "GCD"}};
 
     dut->trace(tfp, 2);// Trace levels of hierarchy
-    tfp->open("/local/liuziang/wave.vcd");
+    tfp->open("logs/wave.vcd");
 
     // Set initial values
     dut->clock = 0;
@@ -48,15 +48,15 @@ int main(int argc, char** argv) {
     // num of tests
     int cnt = 0;
 
-    while(cnt<100) {
+    while(cnt<50) {
         contextp->timeInc(1);
         // Toggle a clock
         dut->clock = !dut->clock;
         // Response to posedge in verilog, set value at negedge in verilator
         if(!dut->clock) {
             if(dut->io_outputValid){
-                dut->io_value1 = rand()%5+1;
-                dut->io_value2 = rand()%5+1;
+                dut->io_value1 = rand()%50+1;
+                dut->io_value2 = rand()%50+1;
                 dut->io_loadingValues = 1;
             }else{
                 dut->io_loadingValues = 0;
