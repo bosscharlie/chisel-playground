@@ -33,15 +33,24 @@ object GCDSpec extends ChiselUtestTester {
             // push inputs into the calculator, stall for 11 cycles one third of the way
             val (seq1, seq2) = inputSeq.splitAt(resultSeq.length / 3)
             dut.input.enqueueSeq(seq1)
+            val vseq1 = seq1.map( bundle => (bundle.value1.litValue.toInt, bundle.value2.litValue.toInt))
+            println(s"Push seq1: $vseq1")
             dut.clock.step(11)
             dut.input.enqueueSeq(seq2)
+            val vseq2 = seq2.map( bundle => (bundle.value1.litValue.toInt, bundle.value2.litValue.toInt))
+            println(s"Push seq2: $vseq2")
           }.fork {
             // retrieve computations from the calculator, stall for 10 cycles one half of the way
             val (seq1, seq2) = resultSeq.splitAt(resultSeq.length / 2)
             dut.output.expectDequeueSeq(seq1)
+            val aseq1 = seq1.map( bundle => (bundle.gcd.litValue.toInt))
+            println(s"get aseq1: $aseq1")
             dut.clock.step(10)
             dut.output.expectDequeueSeq(seq2)
+            val aseq2 = seq2.map( bundle => (bundle.gcd.litValue.toInt))
+            println(s"get aseq2: $aseq1")
           }.join()
+          println("SUCESS")
       }
     }
   }
